@@ -1,0 +1,38 @@
+# Assignment 1 – Regular Expressions
+#Problem 1 (IP Addresses) An Internet Protocol (IP) address is a sequence of 4 numbers (between 0 and 255), using a single dot ‘.’ as a separator: e.g., 172.16.254.1 or 127.0.0.1 are valid IPs (more precisely IPv4) addresses. 
+
+# (a)Write a regular expression that matches IP addresses. Here you don’t have to check that the numbers are in the range of 0 to 255. Try to keep it simple!
+
+\d{1,3}(\.\d{1,3}){3}
+
+# (b)Extra Credit: develop a more precise regex that also makes sure that examples such as 302.207.451.22 are not matched.
+
+(25[0-5]|2[0-4][0-9]|[1][0-9][0-9]|[1-9][0-9]|[0-9]?)(\.(25[0-5]|2[0-4][0-9]|[1][0-9][0-9]|[1-9][0-9]|[0-9]?)){3}
+
+# Problem 2 (Matching ISO-8601 Dates) There is an international standard called ISO 8601 for date and time-related date. Develop regular expressions for the following: 
+
+# (a)Simple standard dates, e.g., 2017-02-14 … and similar. 
+
+(\d{4})-((0[1-9]|1[0-2])-(0[1-9]|1\d|2\d)|((0[13456789]|1[0-2])-30)|((0[13578]|1[02])-31)) 
+
+# (b)Date combined with time but without time zone designators, e.g., 2007-02-14T14:30
+
+(\d{4})-((0[1-9]|1[0-2])-(0[1-9]|1\d|2\d)|((0[13456789]|1[0-2])-30)|((0[13578]|1[02])-31))(T((([01]\d|2[0-3])(\:[0-5]\d)|24\:00)))
+
+# Problem 3 (Matching Non-Standard Dates) In the US, dates are often written in the form MM/DD/YYYY, e.g., 02/14/2017. Another common variant is: February 14, 2017 . In some European countries it is common to write this date as 14.2.2017 or 14.02.2017 . Develop regular expressions that match the following non-ISO conformant (but widespread) ways to write dates. 
+
+# (a)02/14/2017 (and dates like it). Note that there may or may not be leading zeros (e.g., 2/14/2017 is OK). 
+
+(([1-9]|0[1-9]|1[0-2])[/]([1-9]|0[1-9]|1\d|2\d)|((0[13456789]|1[0-2])[/]30)|((0[13578]|1[02])[/]31))[/](\d{4}) 
+
+# (b)14.02.2017 (and similar). Again, there may or may not be leading zeros (e.g., 14.2.2017 is OK). 
+
+((([1-9]|0[1-9]|1\d|2\d)[.][1-9]|0[1-9])|(30[.][13456789]|0[13456789]|1[0-2])|(31[.][13578]|0[13578]|1[0-2]))[.]\d{4}
+
+# (c)February 14, 2017 (and similar). Here the regexp should allow only correct spellings of the months January through December, but independent of case: (e.g., FEBRUARY in uppercase or february are OK, but FEBRUAR (missing “ Y ”) is not OK). Hint: find a way to make regex matching case insensitive.
+
+/(((JANUARY|FEBURARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER) ([1-9]|0[1-9]|1\d|2\d))|((JANUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER) 30)|(JANUARY|MARCH|MAY|JULY|AUGUST|OCTOBER|DECEMBER) 31), \d{4}/i
+
+# Problem 4 (Email Addresses) Develop a regular expression that matches email addresses. For our purposes, an email address consists of a local-part (which here consists of alphanumeric characters, or a dash ‘-’, a dot ‘.’, an underscore ‘_’, a percent sign ‘%’, or a plus ‘+’), followed by the at-sign ‘@’, and a case insensitive domain , which has parts (which here consists of letters and optionally digits or a dash ‘-’) that are separated by a dot ‘.’ and where the last part should have at least two letters. Examples : me@example.com ; more.with+symbol@foo.tv. Counterexamples: john..doe@example.com ; A@b@c@example.com ; me@some.c
+
+([a-z0-9][-a-z0-9_\+\.]*[a-z0-9])@([a-z0-9][-a-z0-9\.])*[a-z0-9]*\.([a-z0-9]{3}|[a-z0-9]{2})*

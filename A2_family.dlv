@@ -1,0 +1,80 @@
+% Assignment: Checking Data Integrity with Datalog (Getting Started file..)
+
+% EDB (Extensional Database) -- FACTS
+% parent(X,Y) means X is_parent_of Y.
+parent(william, john).
+parent(john, james).
+parent(james, bill).
+parent(sue, bill).
+parent(james, carol).
+parent(sue, carol).
+
+male(john).
+male(james).
+male(bill).
+
+female(sue).
+female(carol).
+
+% IDB (Intensional Database) -- RULES
+grandparent(X, Y) :-
+	parent(X, Z), parent(Z, Y).
+father(X, Y) :-
+	parent(X, Y), male(X).
+mother(X, Y) :-
+	parent(X, Y), female(X).
+brother(X, Y) :-
+	parent(P, X), parent(P, Y), male(X), X != Y.
+sister(X, Y) :-
+	parent(P, X), parent(P, Y), female(X), X != Y.
+
+% A recursive query/view:
+ancestor(X, Y) :- parent(X, Y).
+ancestor(X, Y) :- parent(X, Z), ancestor(Z, Y).
+
+% ICs (Integrity Constraints) -- RULES to find "bad" (inconsistent) data
+
+% Assume the IC says: "every person must have a parent".
+% How can we guarantee that?
+%
+% First we find persons who do NOT violate the constraint,
+% that is, we find persons who have parents:
+%
+has_parent(X) :- parent(_,X).
+
+% Now we can easily find persons who violate the has_parent constraint.
+% We can use a convention, e.g., "icv_NNN" to mark [i]ntegrity [c]onstraint [v]iolations
+%
+person(X) :- parent(_,X).
+person(X) :- parent(X,_).
+icv_no_parent(X) :- person(X), not has_parent(X).
+%
+%----------------------------------ANSWERS------------------------------------
+%
+% (C)
+% descendant(X,Y ) holds if X is a descendant of Y:
+
+child(X,Y) :- parent(Y,X).
+descendant(X,Y) :- child(X,Y).
+descendant(X,Y) :- child(X,Z),descendant(Z,Y).
+
+% sibling(X,Y ) holds if X and Y are siblings:
+
+sibling(X,Y) :- parent(Z,X),parent(Z,Y),X!=Y.
+
+
+% (D)
+% Every person must have a parent.(same with handouts)
+has_parent(X) :- parent(_,X).
+person(X) :- parent(_,_).
+icv_no_parent(X) :- person(X), not has_parent(X).
+
+% Every person has a father and a mother
+has_fm(X):- parent(Y,X),parent(Z,X),male(Y),female(Z).
+icv_no_fm(X) :-person(X), not has_fm(X).
+
+
+
+
+
+
